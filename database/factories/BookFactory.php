@@ -14,14 +14,13 @@ use App\Models\Publisher;
 class BookFactory extends Factory
 {
     protected $model = Book::class;
-
     public function definition(): array
     {
         return [
             'title' => $this->faker->sentence(),
-            'author_id' => Author::factory()->create()->id,
-            'category_id' => Category::factory()->create()->id,
-            'publisher_id' => Publisher::factory()->create()->id,
+            'author_id' => Author::factory(),     
+            'category_id' => Category::factory(),  
+            'publisher_id' => Publisher::factory(),
             'published_year' => $this->faker->year(),
         ];
     }
