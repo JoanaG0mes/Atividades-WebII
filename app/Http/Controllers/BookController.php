@@ -1,10 +1,12 @@
 <?php
 namespace App\Http\Controllers;
+use App\Models\User;
 use App\Models\Book;
 use App\Models\Publisher;
 use App\Models\Author;
 use App\Models\Category;
 use Illuminate\Http\Request;
+
 
 class BookController extends Controller
 {
@@ -13,7 +15,20 @@ class BookController extends Controller
     {
         return view('books.create-id');
     }
+public function store(Request $request, Book $book)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+    ]);
 
+    Borrowing::create([
+        'user_id' => $request->user_id,
+        'book_id' => $book->id,
+        'borrowed_at' => now(),
+    ]);
+
+    return redirect()->route('books.show', $book)->with('success', 'Empréstimo registrado com sucesso.');
+}
     // Salvar livro com input de ID
     public function storeWithId(Request $request)
     {
@@ -79,8 +94,10 @@ public function show(Book $book)
     // Carregando autor, editora e categoria do livro com eager loading
     $book->load(['author', 'publisher', 'category']);
 
-    return view('books.show', compact('book'));
+    // Carregar todos os usuários para o formulário de empréstimo
+    $users = User::all();
 
+    return view('books.show', compact('book','users'));
 }
 public function index()
 {
