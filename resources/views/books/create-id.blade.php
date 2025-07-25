@@ -3,7 +3,9 @@
 @section('content')
 <div class="container">
     <h1 class="my-4">Adicionar Livro (Com ID)</h1>
-
+    <label for="cover_image">Capa do Livro (Opcional)</label>
+    <input type="file" name="cover_image" id="cover_image">
+</div>
     <form action="{{ route('books.store.id') }}" method="POST">
         @csrf
         <div class="mb-3">

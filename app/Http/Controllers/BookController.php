@@ -6,7 +6,7 @@ use App\Models\Publisher;
 use App\Models\Author;
 use App\Models\Category;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -105,6 +105,11 @@ public function index()
     $books = Book::with('author')->paginate(20);
 
     return view('books.index', compact('books'));
-
 }
+    public function destroy(Category $category)
+    {
+        $category->delete();
+
+        return redirect()->route('categories.index')->with('success', 'Categoria excluída com sucesso.');
+    }
 }
