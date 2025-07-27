@@ -21,6 +21,7 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Capa</th>
                 <th>Título</th>
                 <th>Autor</th>
                 <th>Ações</th>
@@ -30,6 +31,15 @@
             @forelse($books as $book)
                 <tr>
                     <td>{{ $book->id }}</td>
+                    <td>
+                        @if($book->cover_image)
+                 
+                            <img src="{{ asset('storage/' . $book->cover_image) }}" alt="Capa" style="width: 50px; height: auto; border-radius: 4px;">
+                        @else
+                         
+                        <img src="{{ Vite::asset('resources/img/default_cover.png') }}" alt="Sem Capa" style="width: 50px; height: auto; border-radius: 4px;">
+                        @endif
+                    </td>
                     <td>{{ $book->title }}</td>
                     <td>{{ $book->author->name }}</td>
                     <td>
@@ -47,7 +57,7 @@
                         <form action="{{ route('books.destroy', $book->id) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-danger btn-sm" onclick="return confirm('Deseja excluir este livro?')">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Deseja excluir este livro?')">
                                 <i class="bi bi-trash"></i> Deletar
                             </button>
                         </form>
@@ -55,13 +65,12 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="4">Nenhum livro encontrado.</td>
+                    <td colspan="5">Nenhum livro encontrado.</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 
-    <!-- Controles de Paginação -->
     <div class="d-flex justify-content-center">
         {{ $books->links() }}
     </div>

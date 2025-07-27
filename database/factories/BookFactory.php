@@ -22,6 +22,7 @@ class BookFactory extends Factory
             'category_id' => Category::factory(),  
             'publisher_id' => Publisher::factory(),
             'published_year' => $this->faker->year(),
+            'cover_image' => fn () => rand(0, 1) ? $storedDefaultCoverPath : null,
         ];
     }
 }

@@ -4,26 +4,38 @@
 <div class="container">
     <h1 class="my-4">Detalhes do Livro</h1>
 
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-header">
-            <strong>Título:</strong> {{ $book->title }}
+            <strong>Título:</strong>
         </div>
-        <div class="card-body">
-            <p><strong>Autor:</strong>
-                <a href="{{ route('authors.show', $book->author->id) }}">
-                    {{ $book->author->name }}
-                </a>
-            </p>
-            <p><strong>Editora:</strong>
-                <a href="{{ route('publishers.show', $book->publisher->id) }}">
-                    {{ $book->publisher->name }}
-                </a>
-            </p>
-            <p><strong>Categoria:</strong>
-                <a href="{{ route('categories.show', $book->category->id) }}">
-                    {{ $book->category->name }}
-                </a>
-            </p>
+        <div class="card-body d-flex flex-column flex-md-row align-items-center">
+            <div class="me-md-4 mb-3 mb-md-0"
+                @if($book->cover_image)
+                
+              
+                    <img src="{{ asset('storage/' . $book->cover_image) }}" alt="Capa do Livro" class="img-fluid rounded" style="max-width: 200px; height: auto;">
+                @else
+                 
+                    <img src="{{ asset('imagens/default_cover.png') }}" alt="Capa Padrão" class="img-fluid rounded" style="max-width: 200px; height: auto;">
+                @endif
+            </div>
+            <div>
+                <p><strong>Autor:</strong>
+                    <a href="{{ route('authors.show', $book->author->id) }}">
+              
+                    </a>
+                </p>
+                <p><strong>Editora:</strong>
+                    <a href="{{ route('publishers.show', $book->publisher->id) }}">
+                        
+                    </a>
+                </p>
+                <p><strong>Categoria:</strong>
+                    <a href="{{ route('categories.show', $book->category->id) }}">
+               
+                    </a>
+                </p>
+            </div>
         </div>
     </div>
 
@@ -31,8 +43,9 @@
         <i class="bi bi-arrow-left"></i> Voltar
     </a>
 </div>
+
 <!-- Formulário para Empréstimos -->
-<div class="card mb-4">
+<div class="card mb-4 mt-4">
     <div class="card-header">Registrar Empréstimo</div>
     <div class="card-body">
         <form action="{{ route('books.borrow', $book) }}" method="POST">
@@ -52,7 +65,7 @@
 </div>
 
 <!-- Histórico de Empréstimos -->
-<div class="card">
+<div class="card mt-4">
     <div class="card-header">Histórico de Empréstimos</div>
     <div class="card-body">
         @if($book->users->isEmpty())
@@ -72,11 +85,11 @@
         <tr>
             <td>
                 <a href="{{ route('users.show', $user->id) }}">
-                    {{ $user->name }}
+               
                 </a>
             </td>
-            <td>{{ $user->pivot->borrowed_at }}</td>
-            <td>{{ $user->pivot->returned_at ?? 'Em Aberto' }}</td>
+            <td></td>
+            <td></td>
             <td>
                 @if(is_null($user->pivot->returned_at))
                     <form action="{{ route('borrowings.return', $user->pivot->id) }}" method="POST">

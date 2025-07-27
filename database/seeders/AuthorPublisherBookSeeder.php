@@ -10,21 +10,24 @@ use App\Models\Publisher;
 
 class AuthorPublisherBookSeeder extends Seeder
 {
-        public function run()
-        {
-            // Gera 100 autores, cada um com 10 livros
-            Author::factory(100)->create()->each(function ($author) {
-                // Gera uma editora para cada autor
-                $publisher = Publisher::factory()->create();
-    
-                // Cria 10 livros para cada autor, associando uma categoria existente
-                $author->books()->createMany(
-                    Book::factory(10)->make([
-                        'category_id' => Category::inRandomOrder()->first()->id,
-                        'publisher_id' => $publisher->id,
-                    ])->toArray()
-                );
-            });
-        }
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        Author::factory(100)->create()->each(function ($author) {
+
+   
+            $publisher = Publisher::factory()->create();
+
+      
+            $author->books()->createMany(
+                Book::factory(10)->make([
+                    'category_id' => Category::inRandomOrder()->first()->id,
+                    'publisher_id' => $publisher->id,
+                    'cover_image' => null,
+                ])->toArray()
+            );
+        });
     }
-    
+}
