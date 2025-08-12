@@ -2,11 +2,16 @@
 
 @section('content')
 <div class="container">
-    <h1 class="my-4">Lista de Autores</h1>
-
-    <a href="{{ route('authors.create') }}" class="btn btn-success mb-3">
-        <i class="bi bi-plus"></i> Adicionar Autor
-    </a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="mb-0">Lista de Autores</h1>
+        
+        {{-- BOTÃO DE ADICIONAR AGORA ESTÁ PROTEGIDO --}}
+        @can('create', App\Models\Author::class)
+            <a href="{{ route('authors.create') }}" class="btn btn-success">
+                <i class="bi bi-plus"></i> Adicionar Autor
+            </a>
+        @endcan
+    </div>
 
     @if(session('success'))
         <div class="alert alert-success">
@@ -14,12 +19,12 @@
         </div>
     @endif
 
-    <table class="table table-striped">
-        <thead>
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
             <tr>
                 <th>#</th>
                 <th>Nome</th>
-                <th>Ações</th>
+                <th class="text-end">Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -27,30 +32,32 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $author->name }}</td>
-                    <td>
-                        <!-- Botão de Visualizar -->
+                    <td class="text-end">
+                        {{-- O botão de visualizar é público para todos os utilizadores logados --}}
                         <a href="{{ route('authors.show', $author) }}" class="btn btn-info btn-sm">
-                            <i class="bi bi-eye"></i> Visualizar
+                            Visualizar
                         </a>
 
-                        <!-- Botão de Editar -->
-                        <a href="{{ route('authors.edit', $author) }}" class="btn btn-primary btn-sm">
-                            <i class="bi bi-pencil"></i> Editar
-                        </a>
+                        {{-- BOTÃO DE EDITAR CORRIGIDO E PROTEGIDO --}}
+                        @can('update', $author)
+                            <a href="{{ route('authors.edit', $author) }}" class="btn btn-warning btn-sm">
+                                Editar
+                            </a>
+                        @endcan
 
-                        <!-- Botão de Excluir -->
-                        <form action="{{ route('authors.destroy', $author) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm" onclick="return confirm('Deseja excluir este autor?')">
-                                <i class="bi bi-trash"></i> Excluir
-                            </button>
-                        </form>
+                        {{-- BOTÃO DE EXCLUIR CORRIGIDO E PROTEGIDO --}}
+                        @can('delete', $author)
+                            <form action="{{ route('authors.destroy', $author) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem a certeza?')">Excluir</button>
+                            </form>
+                        @endcan
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="3">Nenhum autor encontrado.</td>
+                    <td colspan="3" class="text-center">Nenhum autor encontrado.</td>
                 </tr>
             @endforelse
         </tbody>

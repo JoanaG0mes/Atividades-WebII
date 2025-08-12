@@ -20,7 +20,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ url('/home') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -30,7 +30,19 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
+                        {{-- Link para o acervo, visível para bibliotecários e admins --}}
+                        @can('gerenciar acervo')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('books.index') }}">Gerenciar Acervo</a>
+                            </li>
+                        @endcan
 
+                        {{-- Link para gerenciar usuários, visível apenas para admins --}}
+                        @can('gerenciar usuarios')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.users.index') }}">Gerenciar Usuários</a>
+                            </li>
+                        @endcan
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -55,6 +67,11 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    {{-- LINK ADICIONADO PARA "MEUS EMPRÉSTIMOS" --}}
+                                    <a class="dropdown-item" href="{{ route('profile.show') }}">
+                                        Meus Empréstimos
+                                    </a>
+
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

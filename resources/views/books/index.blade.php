@@ -1,30 +1,40 @@
+{{-- Este é o código completo e corrigido. Por favor, substitua todo o conteúdo do seu ficheiro por este. --}}
 @extends('layouts.app')
 
 @section('content')
 <div class="container">
-    <h1 class="my-4">Lista de Livros</h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Lista de Livros</h1>
+        
+        {{-- Verificamos se o usuário pode criar um novo livro antes de mostrar os botões --}}
+        @can('create', App\Models\Book::class)
+            <div>
+                <a href="{{ route('books.create.select') }}" class="btn btn-primary">
+                    Adicionar (com Seleção)
+                </a>
+                <a href="{{ route('books.create.id') }}" class="btn btn-secondary">
+                    Adicionar (com ID)
+                </a>
+            </div>
+        @endcan
+    </div>
 
-    @if(session('success'))
+    @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
     @endif
 
-    <a href="{{ route('books.create.id') }}" class="btn btn-success mb-3">
-        <i class="bi bi-plus"></i> Adicionar Livro (Com ID)
-    </a>
-    <a href="{{ route('books.create.select') }}" class="btn btn-primary mb-3">
-        <i class="bi bi-plus"></i> Adicionar Livro (Com Select)
-    </a>
-
-    <table class="table table-striped">
-        <thead>
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
             <tr>
                 <th>ID</th>
                 <th>Capa</th>
                 <th>Título</th>
                 <th>Autor</th>
-                <th>Ações</th>
+                <th>Editora</th>
+                <th>Categoria</th>
+                <th class="text-end">Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -33,39 +43,35 @@
                     <td>{{ $book->id }}</td>
                     <td>
                         @if($book->cover_image)
-                 
-                            <img src="{{ asset('storage/' . $book->cover_image) }}" alt="Capa" style="width: 50px; height: auto; border-radius: 4px;">
+                            <img src="{{ asset('storage/' . $book->cover_image) }}" alt="Capa de {{ $book->title }}" width="50" style="height: 75px; object-fit: cover;">
                         @else
-                         
-                        <img src="{{ Vite::asset('resources/img/default_cover.png') }}" alt="Sem Capa" style="width: 50px; height: auto; border-radius: 4px;">
+                            <img src="{{ asset('img/default_cover.png') }}" alt="Capa padrão" width="50" style="height: 75px; object-fit: cover;">
                         @endif
                     </td>
-                    <td>{{ $book->title }}</td>
+                    <td><a href="{{ route('books.show', $book) }}">{{ $book->title }}</a></td>
                     <td>{{ $book->author->name }}</td>
-                    <td>
-                        <!-- Botão de Visualizar -->
-                        <a href="{{ route('books.show', $book->id) }}" class="btn btn-info btn-sm">
-                            <i class="bi bi-eye"></i> Visualizar
-                        </a>
+                    <td>{{ $book->publisher->name }}</td>
+                    <td>{{ $book->category->name }}</td>
+                    <td class="text-end">
+                        
+                        {{-- O botão de editar só aparece se o usuário puder ATUALIZAR este livro específico --}}
+                        @can('update', $book)
+                            <a href="{{ route('books.edit', $book) }}" class="btn btn-warning btn-sm">Editar</a>
+                        @endcan
 
-                        <!-- Botão de Editar -->
-                        <a href="{{ route('books.edit', $book->id) }}" class="btn btn-primary btn-sm">
-                            <i class="bi bi-pencil"></i> Editar
-                        </a>
-
-                        <!-- Botão de Deletar -->
-                        <form action="{{ route('books.destroy', $book->id) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Deseja excluir este livro?')">
-                                <i class="bi bi-trash"></i> Deletar
-                            </button>
-                        </form>
+                        {{-- O botão de excluir só aparece se o usuário puder DELETAR este livro específico --}}
+                        @can('delete', $book)
+                            <form action="{{ route('books.destroy', $book) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este livro?')">Excluir</button>
+                            </form>
+                        @endcan
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5">Nenhum livro encontrado.</td>
+                    <td colspan="7" class="text-center">Nenhum livro encontrado.</td>
                 </tr>
             @endforelse
         </tbody>
