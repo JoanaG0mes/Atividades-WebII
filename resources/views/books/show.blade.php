@@ -9,11 +9,11 @@
             {{ session('success') }}
         </div>
     @endif
-    @if (session('error'))
-        <div class="alert alert-danger" role="alert">
-            {{ session('error') }}
-        </div>
-    @endif
+  @if (session('error'))
+    <div class="alert alert-danger" role="alert">
+        {{ session('error') }}
+    </div>
+ @endif
 
     <div class="card mb-4">
         <div class="card-body d-flex flex-column flex-md-row align-items-start">
