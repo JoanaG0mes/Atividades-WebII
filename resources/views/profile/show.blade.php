@@ -13,8 +13,8 @@
             <hr>
 
             <h4>Meus Empréstimos</h4>
-            <table class="table table-striped">
-                <thead>
+            <table class="table table-striped table-hover">
+                <thead class="thead-dark">
                     <tr>
                         <th>Capa</th>
                         <th>Título do Livro</th>
@@ -26,10 +26,11 @@
                     @forelse ($borrowings as $book)
                         <tr>
                             <td>
+     
                                 @if($book->cover_image)
-                                    <img src="{{ asset('storage/' . $book->cover_image) }}" alt="Capa" width="40">
+                                    <img src="{{ asset('storage/' . $book->cover_image) }}" alt="Capa" width="40" style="height: 60px; object-fit: cover;">
                                 @else
-                                    <img src="{{ asset('img/default.png') }}" alt="Capa Padrão" width="40">
+                                    <img src="{{ asset('img/default_cover.png') }}" alt="Capa Padrão" width="40" style="height: 60px; object-fit: cover;">
                                 @endif
                             </td>
                             <td>{{ $book->title }}</td>

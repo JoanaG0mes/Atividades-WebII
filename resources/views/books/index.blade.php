@@ -6,7 +6,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Lista de Livros</h1>
         
-        {{-- Verificamos se o usuário pode criar um novo livro antes de mostrar os botões --}}
+
         @can('create', App\Models\Book::class)
             <div>
                 <a href="{{ route('books.create.select') }}" class="btn btn-primary">
@@ -54,12 +54,12 @@
                     <td>{{ $book->category->name }}</td>
                     <td class="text-end">
                         
-                        {{-- O botão de editar só aparece se o usuário puder ATUALIZAR este livro específico --}}
+              
                         @can('update', $book)
                             <a href="{{ route('books.edit', $book) }}" class="btn btn-warning btn-sm">Editar</a>
                         @endcan
 
-                        {{-- O botão de excluir só aparece se o usuário puder DELETAR este livro específico --}}
+            
                         @can('delete', $book)
                             <form action="{{ route('books.destroy', $book) }}" method="POST" class="d-inline">
                                 @csrf

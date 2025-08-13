@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -13,22 +14,19 @@ class RolesAndPermissionsSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Criar Permissões
-        Permission::create(['name' => 'gerenciar livros']);
+        Permission::create(['name' => 'gerenciar acervo']);
         Permission::create(['name' => 'gerenciar usuarios']);
-        Permission::create(['name' => 'fazer emprestimos']);
+        Permission::create(['name' => 'realizar emprestimos']); // Garante que esta permissão é criada
 
         // Criar Papéis e atribuir permissões
-        $cliente = Role::create(['name' => 'cliente']);
-        $cliente->givePermissionTo('fazer emprestimos');
+        Role::create(['name' => 'cliente'])
+            ->givePermissionTo('realizar emprestimos');
 
-        $bibliotecario = Role::create(['name' => 'bibliotecario']);
-        $bibliotecario->givePermissionTo('gerenciar livros');
-        $bibliotecario->givePermissionTo('fazer emprestimos');
+        Role::create(['name' => 'bibliotecario'])
+            ->givePermissionTo(['gerenciar acervo', 'realizar emprestimos']);
 
-        $admin = Role::create(['name' => 'admin']);
-        // O Admin herda todas as permissões do bibliotecario
-        $admin->givePermissionTo($bibliotecario->permissions);
-        // E também pode gerenciar usuários
-        $admin->givePermissionTo('gerenciar usuarios');
+        // Garante que o admin tem TODAS as permissões
+        Role::create(['name' => 'admin'])
+            ->givePermissionTo(Permission::all());
     }
 }

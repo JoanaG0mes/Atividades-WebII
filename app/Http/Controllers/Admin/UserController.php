@@ -48,8 +48,7 @@ class UserController extends Controller
             'role' => 'required|exists:roles,name',
         ]);
 
-        // Usa o método syncRoles do Spatie para atribuir o novo papel.
-        // Ele remove os papéis antigos e adiciona o novo, garantindo que o usuário tenha apenas um.
+   
         $user->syncRoles($request->role);
 
         return redirect()->route('admin.users.index')->with('success', 'Papel do usuário atualizado com sucesso!');

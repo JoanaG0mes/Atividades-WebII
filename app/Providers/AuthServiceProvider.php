@@ -2,12 +2,18 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\Models\Book;
-use App\Policies\BookPolicy;
 use App\Models\User;
+use App\Models\Author;
+use App\Models\Category;
+use App\Models\Publisher;
+use App\Policies\BookPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\AuthorPolicy;
+use App\Policies\CategoryPolicy;
+use App\Policies\PublisherPolicy;
+use Illuminate\Support\Facades\Gate; // Importe o Gate
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -18,17 +24,19 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Book::class => BookPolicy::class,
-        User::class => UserPolicy::class, 
+        User::class => UserPolicy::class,
         Author::class => AuthorPolicy::class,
+        Category::class => CategoryPolicy::class,
+        Publisher::class => PublisherPolicy::class,
     ];
 
-    /**
-     * Register any authentication / authorization services.
-     */
+
     public function boot(): void
     {
         $this->registerPolicies();
 
-    ;
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole('admin') ? true : null;
+        });
     }
 }

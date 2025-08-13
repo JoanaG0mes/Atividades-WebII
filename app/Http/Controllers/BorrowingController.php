@@ -1,42 +1,45 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\User;
+
 use App\Models\Book;
-use App\Models\Borrowing; 
+use App\Models\Borrowing;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // Importa o facade de Autenticação
 
 class BorrowingController extends Controller
 {
+    /**
+     * Regista um novo empréstimo.
+     */
+    public function store(Request $request, Book $book)
+    {
 
-public function store(Request $request, Book $book)
-{
-    $request->validate([
-        'user_id' => 'required|exists:users,id',
-    ]);
+        $this->authorize('realizar emprestimos');
 
-    Borrowing::create([
-        'user_id' => $request->user_id,
-        'book_id' => $book->id,
-        'borrowed_at' => now(),
-    ]);
 
-    return redirect()->route('books.show', $book)->with('success', 'Empréstimo registrado com sucesso.');
-}
+        $existingBorrowing = Borrowing::where('book_id', $book->id)
+                                      ->whereNull('returned_at')
+                                      ->first();
 
-public function returnBook(Borrowing $borrowing)
-{
-    $borrowing->update([
-        'returned_at' => now(),
-    ]);
 
-    return redirect()->route('books.show', $borrowing->book_id)->with('success', 'Devolução registrada com sucesso.');
-}
-public function userBorrowings(User $user)
-{
-    $borrowings = $user->books()->withPivot('borrowed_at', 'returned_at')->get();
+        if ($existingBorrowing) {
+            return redirect()->back()->with('error', 'Este livro já está emprestado e não pode ser pego no momento.');
+        }
 
-    return view('users.borrowings', compact('user', 'borrowings'));
-}
 
+        Borrowing::create([
+            'user_id' => Auth::id(), 
+            'book_id' => $book->id,
+            'borrowed_at' => now(),
+        ]);
+
+        return redirect()->route('books.show', $book)->with('success', 'Empréstimo registado com sucesso!');
+    }
+
+    public function returnBook(Borrowing $borrowing)
+    {
+        $borrowing->update(['returned_at' => now()]);
+        return redirect()->back()->with('success', 'Devolução registada com sucesso.');
+    }
 }

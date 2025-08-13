@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="mb-0">Lista de Autores</h1>
         
-        {{-- BOTÃO DE ADICIONAR AGORA ESTÁ PROTEGIDO --}}
+
         @can('create', App\Models\Author::class)
             <a href="{{ route('authors.create') }}" class="btn btn-success">
                 <i class="bi bi-plus"></i> Adicionar Autor
@@ -33,19 +33,19 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $author->name }}</td>
                     <td class="text-end">
-                        {{-- O botão de visualizar é público para todos os utilizadores logados --}}
+                  
                         <a href="{{ route('authors.show', $author) }}" class="btn btn-info btn-sm">
                             Visualizar
                         </a>
 
-                        {{-- BOTÃO DE EDITAR CORRIGIDO E PROTEGIDO --}}
+                     
                         @can('update', $author)
                             <a href="{{ route('authors.edit', $author) }}" class="btn btn-warning btn-sm">
                                 Editar
                             </a>
                         @endcan
 
-                        {{-- BOTÃO DE EXCLUIR CORRIGIDO E PROTEGIDO --}}
+                  
                         @can('delete', $author)
                             <form action="{{ route('authors.destroy', $author) }}" method="POST" class="d-inline">
                                 @csrf
