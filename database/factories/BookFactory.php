@@ -8,12 +8,10 @@ use App\Models\Author;
 use App\Models\Category;
 use App\Models\Publisher;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Book>
- */
 class BookFactory extends Factory
 {
     protected $model = Book::class;
+    
     public function definition(): array
     {
         return [
@@ -22,7 +20,8 @@ class BookFactory extends Factory
             'category_id' => Category::factory(),  
             'publisher_id' => Publisher::factory(),
             'published_year' => $this->faker->year(),
-            'cover_image' => fn () => rand(0, 1) ? $storedDefaultCoverPath : null,
+            'cover_image' => null, 
+            'is_available' => true, 
         ];
     }
 }

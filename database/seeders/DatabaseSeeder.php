@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             UserBorrowingSeeder::class,
             UserSeeder::class,
             RolesAndPermissionsSeeder::class,
-             AdminUserSeeder::class,
+            AdminUserSeeder::class,
         ]);
     }
 }

@@ -10,23 +10,20 @@ class RolesAndPermissionsSeeder extends Seeder
 {
     public function run(): void
     {
-        // Resetar roles e permissions cacheados
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Criar Permissões
+
         Permission::create(['name' => 'gerenciar acervo']);
         Permission::create(['name' => 'gerenciar usuarios']);
-        Permission::create(['name' => 'realizar emprestimos']); // Garante que esta permissão é criada
+        Permission::create(['name' => 'realizar emprestimos']);
+        Permission::create(['name' => 'gerenciar multas']);
 
-        // Criar Papéis e atribuir permissões
-        Role::create(['name' => 'cliente'])
-            ->givePermissionTo('realizar emprestimos');
 
-        Role::create(['name' => 'bibliotecario'])
-            ->givePermissionTo(['gerenciar acervo', 'realizar emprestimos']);
-
-        // Garante que o admin tem TODAS as permissões
         Role::create(['name' => 'admin'])
             ->givePermissionTo(Permission::all());
+
+
+        Role::create(['name' => 'cliente'])
+            ->givePermissionTo('realizar emprestimos');
     }
 }

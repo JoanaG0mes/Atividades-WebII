@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var list<string>
      */
 protected $fillable = [
-    'name', 'email', 'password', 'role' // Adicione 'role'
+    'name', 'email', 'password', 'role', 'debit',
 ];
 
 // Métodos para verificar papéis

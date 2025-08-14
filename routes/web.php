@@ -9,6 +9,7 @@ use App\Http\Controllers\BorrowingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\FineController; // <-- CORREÇÃO 1: Controller importado.
 
 /*
 |--------------------------------------------------------------------------
@@ -51,5 +52,9 @@ Route::middleware('auth')->group(function () {
     // Rotas de Administração
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', AdminUserController::class)->only(['index', 'edit', 'update']);
+        
+        // Rotas de multas movidas para DENTRO do grupo de administração
+        Route::get('/fines', [FineController::class, 'index'])->name('fines.index');
+        Route::patch('/users/{user}/clear-debit', [FineController::class, 'clearDebit'])->name('fines.clear');
     });
 });

@@ -1,53 +1,52 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Http\Controllers;
 
-use Illuminate\Database\Seeder;
 use App\Models\Author;
-use App\Models\Book;
-use App\Models\Category;
-use App\Models\Publisher;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
+use Illuminate\Http\Request;
 
-class AuthorPublisherBookSeeder extends Seeder
+class AuthorController extends Controller
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function index()
     {
+ 
+        $this->authorize('viewAny', Author::class);
 
-        $defaultPublicImagePath = public_path('images/default_cover.png');
+        $authors = Author::latest()->paginate(15);
 
-        $storedDefaultCoverPath = 'covers/default_cover.png';
+        return view('authors.index', compact('authors'));
+    }
 
-        if (!Storage::disk('public')->directoryExists('covers')) {
-            Storage::disk('public')->makeDirectory('covers');
-        }
+    public function create()
+    {
+        $this->authorize('create', Author::class);
 
-        if (!Storage::disk('public')->exists($storedDefaultCoverPath)) {
-            if (File::exists($defaultPublicImagePath)) {
-                Storage::disk('public')->put(
-                    $storedDefaultCoverPath, 
-                    File::get($defaultPublicImagePath)
-                );
-            } else {
-                Storage::disk('public')->put($storedDefaultCoverPath, 'Placeholder content for default image');
-            }
-        }
+        return view('authors.create');
+    }
 
-        Author::factory(100)->create()->each(function ($author) use ($storedDefaultCoverPath) {
-            $publisher = Publisher::factory()->create();
+    public function store(Request $request)
+    {
+        $this->authorize('create', Author::class);
+     
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+        Author::create($validatedData);
+        return redirect()->route('authors.index')->with('success', 'Autor criado com sucesso.');
+    }
+    public function show(Author $author)
+    {
+        $this->authorize('view', $author);
+        return view('authors.show', compact('author'));
+    }
+    public function edit(Author $author)
+    {
+        $this->authorize('update', $author);
+        return view('authors.edit', compact('author'));
+    }
+    public function update(Request $request, Author $author)
+    {
+        $this->authorize('update', $author);
 
-            Book::factory(10)->make([
-                'category_id' => Category::inRandomOrder()->first()->id,
-                'publisher_id' => $publisher->id,
-                'cover_image' => fn () => rand(0, 1) ? $storedDefaultCoverPath : null,
-            ])->toArray()
-            ->each(function ($bookAttributes) use ($author) {
-                $author->books()->create($bookAttributes);
-            });
-        });
     }
 }

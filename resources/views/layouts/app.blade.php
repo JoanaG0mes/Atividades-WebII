@@ -32,6 +32,12 @@
                             </li>
                         @endcan
                         
+                        @can('gerenciar multas')
+                <li class="nav-item">
+               <a class="nav-link" href="{{ route('admin.fines.index') }}">Gerir Multas</a>
+                </li>
+                    @endcan
+
                         @can('gerenciar usuarios')
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.users.index') }}">Gerenciar Usuários</a>
